@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<title>BioScan — DNA Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#07111f;--panel:#101f33;--panel2:#0b1828;--line:#263c55;--cyan:#65e7f2;--mint:#8af0bd;--pink:#ff8ca4;--text:#f3f7ff;--muted:#9eb2c9;--gold:#ffd88a}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 85% 0%,#173c58 0,transparent 34%),radial-gradient(ellipse at 0% 25%,#172b4c 0,transparent 34%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:16px}
+main{width:min(900px,100%);margin:auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:5px 0 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.02em}
+.logo{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#64e7f2,#9df5c7);color:#071521;font-size:22px;box-shadow:0 7px 25px #65e7f222}
+.live{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--mint);border:1px solid #2d6a60;background:#10352f;padding:6px 10px;border-radius:99px}
+.hero{display:grid;grid-template-columns:1fr;gap:18px;align-items:center;padding:15px 0 20px}
+.eyebrow{font-size:11px;font-weight:900;letter-spacing:.2em;color:var(--cyan);text-transform:uppercase}
+h1{font-size:clamp(2.2rem,8vw,4.6rem);line-height:.98;letter-spacing:-.055em;margin:10px 0 15px}
+h1 span{display:block;color:var(--cyan)}
+.intro{max-width:580px;color:var(--muted);font-size:16px;margin:0}
+.hero-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.pill{border:1px solid var(--line);background:#0c1a2b;border-radius:999px;padding:7px 10px;color:#c9d8e9;font-size:12px;font-weight:700}
+.visual{position:relative;overflow:hidden;min-height:118px;border:1px solid #24455e;border-radius:22px;background:linear-gradient(120deg,#102840,#102139 65%,#163b4c);padding:18px}
+.visual:after{content:"";position:absolute;width:150px;height:150px;border:1px solid #65e7f233;border-radius:50%;right:-30px;top:-65px;box-shadow:0 0 0 20px #65e7f20a,0 0 0 42px #65e7f208}
+.visual-title{position:relative;z-index:1;color:var(--muted);font-size:11px;letter-spacing:.15em;font-weight:800}
+.helix{height:63px;display:flex;align-items:center;gap:5px;margin-top:10px;position:relative;z-index:1}
+.helix span{height:14px;flex:1;border-radius:5px;transform:skewY(-18deg);background:linear-gradient(90deg,#65e7f2,#8af0bd);box-shadow:0 0 15px #65e7f222}
+.helix span:nth-child(even){transform:skewY(18deg);background:linear-gradient(90deg,#ff8ca4,#ffd88a)}
+.panel{background:linear-gradient(145deg,#12243aee,#0b1929f5);border:1px solid var(--line);border-radius:22px;padding:19px;margin:15px 0;box-shadow:0 16px 40px #0002}
+.section-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px}
+.num{display:grid;place-items:center;flex:0 0 36px;height:36px;border-radius:12px;background:#173d50;color:var(--cyan);font-weight:900}
+h2{font-size:19px;margin:0 0 3px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:13px;margin:0}
+label{display:block;font-weight:800;font-size:13px;margin:14px 0 7px}
+.input-wrap{position:relative}
+textarea{width:100%;min-height:72px;resize:vertical;border:1px solid #304963;border-radius:14px;background:#071421;color:var(--text);padding:14px;font:800 1.12rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;outline:none;transition:border .2s,box-shadow .2s}
+textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #65e7f21a}
+.helper{font-size:12px;color:var(--muted);margin:8px 0 0}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}
+button{font:inherit;border:0;border-radius:13px;padding:12px 14px;font-weight:850;cursor:pointer;transition:transform .15s,filter .15s}
+button:active{transform:scale(.98)}
+.primary{grid-column:1/-1;background:linear-gradient(100deg,var(--cyan),var(--mint));color:#061722;font-size:15px;box-shadow:0 8px 22px #65e7f21b}
+.secondary{background:#182d43;color:#dce9f6;border:1px solid #34506a}
+.message{min-height:4px;margin:9px 0 0;font-size:13px}
+.error{color:var(--pink);font-weight:750}
+.results{display:none;animation:rise .35s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.result-banner{display:flex;justify-content:space-between;gap:12px;align-items:center;background:#0b1a29;border:1px solid #28435a;border-radius:15px;padding:14px;margin:14px 0}
+.result-label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.13em;font-weight:800}
+.big-percent{font-size:31px;line-height:1.15;font-weight:950;color:var(--mint);letter-spacing:-.04em}
+.meter{height:7px;border-radius:99px;background:#23384c;overflow:hidden;margin-top:9px}
+.meter-fill{height:100%;width:80%;background:linear-gradient(90deg,var(--cyan),var(--mint));border-radius:99px;transition:width .3s}
+.stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{background:#0a1726;border:1px solid #20364b;border-radius:15px;padding:13px}
+.stat span{display:block;color:var(--muted);font-size:12px}
+.stat strong{display:block;font-size:23px;margin-top:3px;letter-spacing:-.03em}
+.stat:nth-child(1) strong{color:var(--cyan)}.stat:nth-child(2) strong{color:var(--gold)}
+.sequence-block{margin-top:18px}
+.seq-title{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:13px;font-weight:800;margin-bottom:8px}
+.sequence{display:flex;flex-wrap:wrap;gap:5px}
+.base{min-width:34px;text-align:center;border-radius:9px;padding:8px 5px;font:900 15px ui-monospace,monospace;background:#1b3045;border:1px solid #2a455c}
+.base.match{background:#123f3a;color:#a6ffdb;border-color:#28695b}
+.base.diff{background:#512938;color:#ffd4dc;border-color:#a34b64;box-shadow:0 0 0 1px #ff8ca433}
+.legend{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin-top:11px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:3px;margin-right:5px}
+.finding{border-left:3px solid var(--cyan);padding:10px 12px;background:#0b1a29;border-radius:0 12px 12px 0;margin-top:16px;font-size:13px;color:#d8e7f4}
+.info-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.info-card{border:1px solid #263d53;background:#0c1b2b;border-radius:14px;padding:14px}
+.info-card strong{display:block;margin-bottom:4px;color:var(--cyan)}
+.info-card p{margin:0;color:var(--muted);font-size:13px}
+.notice{font-size:12px;color:#d5c7a4;background:#302919;border:1px solid #5b4b2a;border-radius:12px;padding:12px;margin-top:13px}
+footer{text-align:center;color:#748ca5;font-size:12px;padding:22px 6px 8px}
+@media(min-width:680px){body{padding:25px}.hero{grid-template-columns:1.1fr .9fr;padding:24px 0 28px}.panel{padding:24px}.info-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:360px){body{padding:10px}.panel{padding:14px}.base{min-width:28px;padding:7px 3px}.actions{gap:6px}}
+</style>
+</head>
+<body>
+<main>
+  <nav class="topbar" aria-label="Project header">
+    <div class="brand"><div class="logo">⌬</div><span>BIOSCAN <span style="color:var(--muted);font-weight:600">/ DNA LAB</span></span></div>
+    <div class="live">● INTERACTIVE DEMO</div>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <div class="eyebrow">Class 9 · Science Exhibition</div>
+      <h1>Explore the code of <span>life.</span></h1>
+      <p class="intro">A hands-on introduction to bioinformatics. Compare two sample DNA sequences and see where their letters match — and where they differ.</p>
+      <div class="hero-pills"><span class="pill">DNA comparison</span><span class="pill">Instant results</span><span class="pill">Educational tool</span></div>
+    </div>
+    <div class="visual" aria-label="Decorative DNA sequence graphic">
+      <div class="visual-title">SEQUENCE VISUALIZER // A T G C</div>
+      <div class="helix" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <div style="position:relative;z-index:1;font:700 11px ui-monospace,monospace;color:#a9c8d9;letter-spacing:.18em">ATGCA · ATACA · ANALYZE</div>
+    </div>
+  </header>
+
+  <section class="panel">
+    <div class="section-head"><div class="num">01</div><div><h2>Load your DNA samples</h2><p class="sub">Enter a sequence using A, T, G and C.</p></div></div>
+    <label for="seq1">Sample 01 <span style="color:var(--muted);font-weight:500">/ reference</span></label>
+    <textarea id="seq1" spellcheck="false" autocapitalize="characters" aria-label="DNA sample one">ATGCA</textarea>
+    <label for="seq2">Sample 02 <span style="color:var(--muted);font-weight:500">/ compare</span></label>
+    <textarea id="seq2" spellcheck="false" autocapitalize="characters" aria-label="DNA sample two">ATACA</textarea>
+    <p class="helper">For this beginner demo, both sequences must be the same length. Spaces are ignored.</p>
+    <div class="actions">
+      <button class="secondary" id="example">↻ Load example</button>
+      <button class="secondary" id="clear">Clear all</button>
+      <button class="primary" id="compare">✦ &nbsp; Compare DNA sequences</button>
+    </div>
+    <p id="message" class="message" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="panel results" id="results" aria-live="polite">
+    <div class="section-head"><div class="num">02</div><div><h2>Analysis report</h2><p class="sub">Position-by-position sequence comparison</p></div></div>
+    <div class="result-banner"><div style="flex:1"><div class="result-label">Sequence similarity</div><div class="big-percent" id="percent">80%</div><div class="meter"><div class="meter-fill" id="meterFill"></div></div></div><div style="font-size:30px" aria-hidden="true">✧</div></div>
+    <div class="stat-grid"><div class="stat"><span>Matching positions</span><strong id="count">4 / 5</strong></div><div class="stat"><span>Different positions</span><strong id="diffcount">1</strong></div></div>
+    <div class="sequence-block"><div class="seq-title"><span>Sample 01</span><span id="length1" style="color:var(--muted)">5 bases</span></div><div class="sequence" id="view1"></div></div>
+    <div class="sequence-block"><div class="seq-title"><span>Sample 02</span><span id="length2" style="color:var(--muted)">5 bases</span></div><div class="sequence" id="view2"></div></div>
+    <div class="legend"><span><i class="dot" style="background:var(--mint)"></i>Match</span><span><i class="dot" style="background:var(--pink)"></i>Difference</span></div>
+    <div class="finding" id="difftext"></div>
+  </section>
+
+  <section class="panel">
+    <div class="section-head"><div class="num">03</div><div><h2>Understand the result</h2><p class="sub">What can a sequence difference tell us?</p></div></div>
+    <div class="info-grid">
+      <div class="info-card"><strong>Compare</strong><p>The program checks each position in both sequences.</p></div>
+      <div class="info-card"><strong>Measure</strong><p>Similarity is the number of matching positions divided by total positions.</p></div>
+      <div class="info-card"><strong>Interpret carefully</strong><p>A DNA difference alone does not tell us whether a change is harmful.</p></div>
+    </div>
+    <div class="notice"><strong>Science note:</strong> This is a classroom demonstration using sample sequences, not a medical test or disease detector. Real bioinformatics uses more advanced methods and biological evidence.</div>
+  </section>
+  <footer>BIOSCAN DNA LAB · Biology + Computer Science · Built for learning</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+function clean(s){return s.toUpperCase().replace(/\s+/g,'')}
+function compare(){
+ const a=clean($('seq1').value),b=clean($('seq2').value);
+ $('message').className='message';$('message').textContent='';$('results').style.display='none';
+ if(!a||!b){$('message').classList.add('error');$('message').textContent='Please enter both DNA sequences.';return}
+ if(!/^[ATGC]+$/.test(a)||!/^[ATGC]+$/.test(b)){$('message').classList.add('error');$('message').textContent='Only A, T, G and C are allowed. Please correct the sequences.';return}
+ if(a.length!==b.length){$('message').classList.add('error');$('message').textContent='Both sequences need the same number of letters in this demo.';return}
+ let matches=0,diffs=[];
+ for(let i=0;i<a.length;i++){if(a[i]===b[i])matches++;else diffs.push(i+1)}
+ const pct=matches/a.length*100;
+ $('count').textContent=matches+' / '+a.length;$('percent').textContent=pct.toFixed(1).replace('.0','')+'%';$('diffcount').textContent=diffs.length;
+ $('meterFill').style.width=pct+'%';$('length1').textContent=a.length+' bases';$('length2').textContent=b.length+' bases';
+ $('view1').replaceChildren();$('view2').replaceChildren();
+ for(let i=0;i<a.length;i++){
+  for(const [id,s] of [['view1',a],['view2',b]]){
+   const span=document.createElement('span');span.className='base '+(a[i]===b[i]?'match':'diff');span.textContent=s[i];span.title='Position '+(i+1);$(id).appendChild(span)
+  }
+ }
+ $('difftext').textContent=diffs.length?'Different position'+(diffs.length===1?'':'s')+': '+diffs.join(', ')+'. At these positions, the letters are not the same.':'All positions match in these sample sequences.';
+ $('results').style.display='block';
+}
+$('compare').addEventListener('click',compare);
+$('example').addEventListener('click',()=>{$('seq1').value='ATGCA';$('seq2').value='ATACA';compare()});
+$('clear').addEventListener('click',()=>{$('seq1').value='';$('seq2').value='';$('results').style.display='none';$('message').textContent='';$('seq1').focus()});
+compare();
+</script>
+</body>
+</html>
